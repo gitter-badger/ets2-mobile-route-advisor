@@ -17,7 +17,7 @@ function calculatePixelCoordinateEu(x, y) {
     return calculatePixelCoordinate(x, y, 7.278, 13164, 16260); //x+16, y+4
 }
 function calculatePixelCoordinateUk(x, y) {
-	//return calculatePixelCoordinate(x, y, 9.69522, 11446, 14422);
+    //return calculatePixelCoordinate(x, y, 9.69522, 11446, 14422);
     return calculatePixelCoordinate(x, y, 7.278, 13164, 16260); //x-550, y-1540 //Original pointsPerPixel: 9.69522, own calculated: 8.62552985346, x0: 12093, y0: 15148
 }
 
@@ -119,6 +119,7 @@ function buildMap(target_element_id){
         ]),
         layers: [
             getMapTilesLayer(projection, custom_tilegrid),
+            getTextLayer(),
             // Debug layer below.
             // new ol.layer.Tile({
             //     extent: [0, 0, MAX_X, MAX_Y],
@@ -215,6 +216,51 @@ function getMapTilesLayer(projection, tileGrid) {
     }
 
     return new ol.layer.Tile();
+}
+
+function getTextFeatures() {
+    var features = [];
+    $.each(g_cities_json, function() {
+        var cityName = this.realName;
+        console.log(cityName);
+        var map_coords = game_coord_to_pixels(this.x, this.z);
+        var feature = new ol.Feature({
+            name: name
+        });
+
+        var fill = new ol.style.Fill();
+        fill.setColor('#fff');
+        var stroke = new ol.style.Stroke();
+        stroke.setColor('#fff');
+        stroke.setWidth(1);
+        var textStyle = new ol.style.Style({
+            text: new ol.style.Text({
+                text: cityName,
+                offsetX: 0,
+                offsetY: 0,
+                rotation: 0,
+                fill: fill,
+                stroke: stroke
+            })
+        });
+        feature.setGeometry(new ol.geom.Point(map_coords));
+        feature.setStyle(textStyle);
+        features.push(feature);
+    });
+
+    return features;
+}
+
+function getTextLayer() {
+    var textSource = new ol.source.Vector({
+        features: getTextFeatures(),
+        wrapX: false
+    });
+    var vectorLayer = new ol.layer.Vector({
+        source: textSource
+    });
+
+    return vectorLayer;
 }
 
 // Global vars.

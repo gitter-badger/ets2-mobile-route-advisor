@@ -160,6 +160,7 @@ Funbit.Ets.Telemetry.Dashboard.prototype.initialize = function (skinConfig) {
 
     // Initialize JavaScript
     g_pathPrefix = 'skins/' + skinConfig.name;
+    $.getScript(g_pathPrefix + '/js/cities.js');
     $.getScript(g_pathPrefix + '/js/ol.js');
     $.getScript(g_pathPrefix + '/js/map.js');
 
